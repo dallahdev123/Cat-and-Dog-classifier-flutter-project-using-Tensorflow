@@ -21,13 +21,13 @@ class _MySplahState extends State<MySplah> {
         style: TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
-          color: Color(0x00FFFF),
+          color: Colors.amber,
         ),
       ),
       image: Image.asset('assets/cat_dog_icon.png'),
       backgroundColor: Colors.blueAccent,
       photoSize: 60,
-      loaderColor: Color(0x004242),
+      loaderColor: Colors.red,
     );
   }
 }
