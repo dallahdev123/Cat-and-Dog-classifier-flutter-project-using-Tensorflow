@@ -28,32 +28,32 @@ class _HomeState extends State<Home> {
 
   detectImage(File image) async {
     var output = await Tflite.runModelOnImage(
-        path: image.path,
-        numResults: 2,
-        threshold: 0.6,
-        imageMean: 127.5,
-        imageStd: 127.5);
+      path: image.path,
+      numResults: 2,
+      threshold: 0.6,
+      imageMean: 127.5,
+      imageStd: 127.5,
+      asynch: true,
+    ) as List;
     setState(() {
-      _output = output as List<dynamic>;
+      _output = output;
       _loading = false;
     });
   }
 
   loadModel() async {
     await Tflite.loadModel(
-        model: 'assete/model_unquant.tflite', labels: 'assets/labels.txt');
+        model: 'assets/model_unquant.tflite', labels: 'assets/labels.txt');
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
   pickImage() async {
     var image = await picker.getImage(source: ImageSource.camera);
     if (image == null) return null;
-
     setState(() {
       _image = File(image.path);
     });
@@ -63,7 +63,6 @@ class _HomeState extends State<Home> {
   pickGalleryImage() async {
     var image = await picker.getImage(source: ImageSource.gallery);
     if (image == null) return null;
-
     setState(() {
       _image = File(image.path);
     });
@@ -106,7 +105,7 @@ class _HomeState extends State<Home> {
                         child: Column(
                           children: <Widget>[
                             Image.asset('assets/cat_dog_icon.png'),
-                            SizedBox(height: 40),
+                            SizedBox(height: 30),
                           ],
                         ),
                       )
@@ -120,13 +119,15 @@ class _HomeState extends State<Home> {
                             SizedBox(
                               height: 20,
                             ),
-                            _output != null
+                            _output[0] != null
                                 ? Text(
                                     '${_output[0]['label']}',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 15),
                                   )
-                                : Container(),
+                                : Container(
+                                    child: Text("no image"),
+                                  ),
                             SizedBox(
                               height: 10,
                             ),
@@ -157,7 +158,7 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
                           pickGalleryImage();
